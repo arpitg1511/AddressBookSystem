@@ -2,6 +2,7 @@ package com.arpit.addressbook.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AddressBook {
     private List<Contact> contacts;
@@ -29,12 +30,12 @@ public class AddressBook {
         contacts.remove(contact);
     }
 
-    public Contact findContact(Contact contact) {
+    public Optional<Contact> findContact(Contact contact) {
         for (Contact c : contacts) {
             if (c.equals(contact)) {
-                return c;
+                return Optional.of(c);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
