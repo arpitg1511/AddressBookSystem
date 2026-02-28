@@ -35,4 +35,9 @@ public class AddressBook {
                 .filter(c -> c.getFirstName().equals(firstName) && c.getLastName().equals(lastName))
                 .findFirst();
     }
+
+    public boolean deleteContact(String firstName, String lastName) {
+        return contacts.removeIf(c -> c.getFirstName().equals(firstName)
+                                    && c.getLastName().equals(lastName));
+    }
 }

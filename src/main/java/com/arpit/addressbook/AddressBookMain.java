@@ -23,14 +23,16 @@ public class AddressBookMain {
             System.out.println("\nChoose an option:");
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
-            System.out.println("3. Exit");
+            System.out.println("3. Delete Contact");
+            System.out.println("4. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
                 case 1 -> addContact(addressBook);
                 case 2 -> editContact(addressBook);
-                case 3 -> {
+                case 3 -> deleteContact(addressBook);
+                case 4 -> {
                     running = false;
                     System.out.println("Exiting Address Book...");
                 }
@@ -125,6 +127,23 @@ public class AddressBookMain {
 
             System.out.println("Contact updated successfully!");
 
+        } else {
+            System.out.println("Contact not found!");
+        }
+    }
+
+    public static void deleteContact(AddressBook addressBook) {
+
+        System.out.println("\nEnter name of contact to delete:");
+
+        System.out.print("First Name: ");
+        String firstName = scanner.nextLine();
+
+        System.out.print("Last Name: ");
+        String lastName = scanner.nextLine();
+
+        if(addressBook.deleteContact(firstName, lastName)) {
+            System.out.println("Contact deleted successfully!");
         } else {
             System.out.println("Contact not found!");
         }
