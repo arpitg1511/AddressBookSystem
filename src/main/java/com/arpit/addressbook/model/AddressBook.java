@@ -30,12 +30,9 @@ public class AddressBook {
         contacts.remove(contact);
     }
 
-    public Optional<Contact> findContact(Contact contact) {
-        for (Contact c : contacts) {
-            if (c.equals(contact)) {
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+    public Optional<Contact> findContact(String firstName, String lastName) {
+        return contacts.stream()
+                .filter(c -> c.getFirstName().equals(firstName) && c.getLastName().equals(lastName))
+                .findFirst();
     }
 }
