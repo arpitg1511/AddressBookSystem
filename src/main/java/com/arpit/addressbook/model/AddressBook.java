@@ -20,4 +20,21 @@ public class AddressBook {
     public List<Contact> getContacts() {
         return contacts;
     }
+
+    public boolean containsContact(Contact contact) {
+        return contacts.contains(contact);
+    }
+
+    public void removeContact(Contact contact) {
+        contacts.remove(contact);
+    }
+
+    public Contact findContact(Contact contact) {
+        for (Contact c : contacts) {
+            if (c.equals(contact)) {
+                return c;
+            }
+        }
+        return null;
+    }
 }
