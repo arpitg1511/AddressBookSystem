@@ -40,4 +40,10 @@ public class AddressBook {
         return contacts.removeIf(c -> c.getFirstName().equals(firstName)
                                     && c.getLastName().equals(lastName));
     }
+
+    public void displayContacts() {
+        for (Contact contact : contacts) {
+            System.out.println(contact);
+        }
+    }
 }

@@ -24,7 +24,8 @@ public class AddressBookMain {
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
             System.out.println("3. Delete Contact");
-            System.out.println("4. Exit");
+            System.out.println("4. Add Multiple Contacts");
+            System.out.println("5. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -32,7 +33,8 @@ public class AddressBookMain {
                 case 1 -> addContact(addressBook);
                 case 2 -> editContact(addressBook);
                 case 3 -> deleteContact(addressBook);
-                case 4 -> {
+                case 4 -> addMultipleContacts(addressBook);
+                case 5 -> {
                     running = false;
                     System.out.println("Exiting Address Book...");
                 }
@@ -41,11 +43,7 @@ public class AddressBookMain {
         }
     }
 
-    // ================== UC1 ==================
-
-    private static void addContact(AddressBook addressBook) {
-
-        System.out.println("\nEnter Contact Details:");
+    private static Contact readContactFromConsole() {
 
         System.out.print("First Name: ");
         String firstName = scanner.nextLine();
@@ -71,16 +69,13 @@ public class AddressBookMain {
         System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        Contact contact = new Contact(
-                firstName,
-                lastName,
-                address,
-                city,
-                state,
-                zip,
-                phoneNumber,
-                email
-        );
+        return new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
+    }
+    // ================== UC1 ==================
+
+    private static void addContact(AddressBook addressBook) {
+
+        Contact contact = readContactFromConsole();
 
         addressBook.addContact(contact);
 
@@ -146,6 +141,25 @@ public class AddressBookMain {
             System.out.println("Contact deleted successfully!");
         } else {
             System.out.println("Contact not found!");
+        }
+    }
+
+    private static void addMultipleContacts(AddressBook addressBook) {
+
+        boolean adding = true;
+
+        while (adding) {
+
+            Contact contact = readContactFromConsole();
+
+            addressBook.addContact(contact);
+
+            System.out.print("Do you want to add another contact? (yes/no): ");
+            String response = scanner.nextLine();
+
+            if (!response.equalsIgnoreCase("yes")) {
+                adding = false;
+            }
         }
     }
 }
