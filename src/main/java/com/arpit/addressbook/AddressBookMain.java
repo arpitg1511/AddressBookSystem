@@ -2,6 +2,7 @@ package com.arpit.addressbook;
 
 import com.arpit.addressbook.model.AddressBook;
 import com.arpit.addressbook.model.Contact;
+import com.arpit.addressbook.service.AddressBookService;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -12,20 +13,70 @@ public class AddressBookMain {
 
     public static void main(String[] args) {
 
-        System.out.println("Welcome to Address Book");
-
-        AddressBook addressBook = new AddressBook();
+        System.out.println("Welcome to Address Book System");
+        AddressBookService addressBookService = new AddressBookService();
 
         boolean running = true;
 
         while (running) {
 
             System.out.println("\nChoose an option:");
+            System.out.println("1. Create AddressBook");
+            System.out.println("2. Select AddressBook");
+            System.out.println("3. Exit");
+
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1 -> createAddressBook(addressBookService);
+                case 2 -> manageAddressBook(addressBookService);
+                case 3 -> {
+                    running = false;
+                    System.out.println("Exiting Address Book System...");
+                }
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    // ================== ADDRESS BOOK LEVEL ==================
+
+    private static void createAddressBook(AddressBookService service) {
+
+        System.out.print("Enter Address Book Name: ");
+        String name = scanner.nextLine();
+
+        if (service.createAddressBook(name)) {
+            System.out.println("Address Book created successfully!");
+        } else {
+            System.out.println("Address Book with this name already exists!");
+        }
+    }
+
+    private static void manageAddressBook(AddressBookService service) {
+
+        System.out.print("Enter Address Book Name: ");
+        String name = scanner.nextLine();
+
+        Optional<AddressBook> opt = service.getAddressBook(name);
+
+        if (opt.isEmpty()) {
+            System.out.println("Address Book not found!");
+            return;
+        }
+
+        AddressBook addressBook = opt.get();
+
+        boolean managing = true;
+
+        while (managing) {
+
+            System.out.println("\nManaging AddressBook: " + name);
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
             System.out.println("3. Delete Contact");
             System.out.println("4. Add Multiple Contacts");
-            System.out.println("5. Exit");
+            System.out.println("5. Back");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -34,14 +85,13 @@ public class AddressBookMain {
                 case 2 -> editContact(addressBook);
                 case 3 -> deleteContact(addressBook);
                 case 4 -> addMultipleContacts(addressBook);
-                case 5 -> {
-                    running = false;
-                    System.out.println("Exiting Address Book...");
-                }
+                case 5 -> managing = false;
                 default -> System.out.println("Invalid choice. Try again.");
             }
         }
     }
+
+    // ================== CONTACT LEVEL ==================
 
     private static Contact readContactFromConsole() {
 
@@ -71,18 +121,14 @@ public class AddressBookMain {
 
         return new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
     }
-    // ================== UC1 ==================
 
     private static void addContact(AddressBook addressBook) {
 
         Contact contact = readContactFromConsole();
-
         addressBook.addContact(contact);
 
         System.out.println("Contact added successfully!");
     }
-
-    // ================== UC2 ==================
 
     private static void editContact(AddressBook addressBook) {
 
@@ -100,7 +146,7 @@ public class AddressBookMain {
 
             Contact contact = contactOpt.get();
 
-            System.out.println("Contact found. Enter new details:");
+            System.out.println("Enter new details:");
 
             System.out.print("New Address: ");
             contact.setAddress(scanner.nextLine());
@@ -127,7 +173,7 @@ public class AddressBookMain {
         }
     }
 
-    public static void deleteContact(AddressBook addressBook) {
+    private static void deleteContact(AddressBook addressBook) {
 
         System.out.println("\nEnter name of contact to delete:");
 
@@ -137,7 +183,7 @@ public class AddressBookMain {
         System.out.print("Last Name: ");
         String lastName = scanner.nextLine();
 
-        if(addressBook.deleteContact(firstName, lastName)) {
+        if (addressBook.deleteContact(firstName, lastName)) {
             System.out.println("Contact deleted successfully!");
         } else {
             System.out.println("Contact not found!");
@@ -151,10 +197,9 @@ public class AddressBookMain {
         while (adding) {
 
             Contact contact = readContactFromConsole();
-
             addressBook.addContact(contact);
 
-            System.out.print("Do you want to add another contact? (yes/no): ");
+            System.out.print("Add another contact? (yes/no): ");
             String response = scanner.nextLine();
 
             if (!response.equalsIgnoreCase("yes")) {
