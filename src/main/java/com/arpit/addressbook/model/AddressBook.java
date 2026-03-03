@@ -14,8 +14,17 @@ public class AddressBook {
         this.contacts = contacts;
     }
 
-    public void addContact(Contact contact) {
-        contacts.add(contact);
+    public boolean addContact(Contact contact) {
+        Optional<Contact> opt = contacts.stream()
+                                .filter(c -> c.equals(contact))
+                                .findFirst();
+
+        if(opt.isEmpty()) {
+            return false;
+        } else {
+            contacts.add(contact);
+            return true;
+        }
     }
 
     public List<Contact> getContacts() {

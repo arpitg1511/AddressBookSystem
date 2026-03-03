@@ -125,9 +125,12 @@ public class AddressBookMain {
     private static void addContact(AddressBook addressBook) {
 
         Contact contact = readContactFromConsole();
-        addressBook.addContact(contact);
 
-        System.out.println("Contact added successfully!");
+        if(!addressBook.addContact(contact)) {
+            System.out.println("Contact already exists!");
+        } else {
+            System.out.println("Contact added successfully!");
+        }
     }
 
     private static void editContact(AddressBook addressBook) {
@@ -196,8 +199,7 @@ public class AddressBookMain {
 
         while (adding) {
 
-            Contact contact = readContactFromConsole();
-            addressBook.addContact(contact);
+            addContact(addressBook);
 
             System.out.print("Add another contact? (yes/no): ");
             String response = scanner.nextLine();
