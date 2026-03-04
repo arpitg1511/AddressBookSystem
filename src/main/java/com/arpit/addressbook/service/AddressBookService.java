@@ -1,8 +1,9 @@
 package com.arpit.addressbook.service;
-
 import com.arpit.addressbook.model.AddressBook;
+import com.arpit.addressbook.model.Contact;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class AddressBookService {
     private Map<String, AddressBook> addressBooks;
@@ -30,5 +31,19 @@ public class AddressBookService {
 
     public Map<String, AddressBook> getAddressBooks() {
         return addressBooks;
+    }
+
+    public List<Contact> searchByCity(String city) {
+        return addressBooks.values().stream()
+                .flatMap(book -> book.getContacts().stream())
+                .filter(contact -> contact.getCity().equalsIgnoreCase(city))
+                .collect(Collectors.toList());
+    }
+
+    public List<Contact> searchByState(String state) {
+        return addressBooks.values().stream()
+                .flatMap(b -> b.getContacts().stream())
+                .filter(c -> c.getState().equals(state))
+                .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ import com.arpit.addressbook.model.AddressBook;
 import com.arpit.addressbook.model.Contact;
 import com.arpit.addressbook.service.AddressBookService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -23,14 +24,16 @@ public class AddressBookMain {
             System.out.println("\nChoose an option:");
             System.out.println("1. Create AddressBook");
             System.out.println("2. Select AddressBook");
-            System.out.println("3. Exit");
+            System.out.println("3. Search Person by City or State");
+            System.out.println("4. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
                 case 1 -> createAddressBook(addressBookService);
                 case 2 -> manageAddressBook(addressBookService);
-                case 3 -> {
+                case 3 -> searchPersons(addressBookService);
+                case 4 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -207,6 +210,30 @@ public class AddressBookMain {
             if (!response.equalsIgnoreCase("yes")) {
                 adding = false;
             }
+        }
+    }
+
+    private static void searchPersons(AddressBookService addressBookService) {
+        System.out.println("Search by : \n1. City\n2.State");
+
+        String choice = scanner.nextLine();
+        System.out.println("Enter name of city/state : ");
+        String name = scanner.nextLine();
+        List<Contact> searchList=
+            switch (choice) {
+                case "1" -> addressBookService.searchByCity(name);
+                case "2" -> addressBookService.searchByState(name);
+                default -> null;
+            };
+
+        if(searchList!=null) {
+            if(searchList.size()>0) {
+                searchList.forEach(System.out::println);
+            } else {
+                System.out.println("No contact found!");
+            }
+        } else {
+            System.out.println("Invalid state or city name entered!");
         }
     }
 }
