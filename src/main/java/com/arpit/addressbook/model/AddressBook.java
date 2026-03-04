@@ -1,8 +1,10 @@
 package com.arpit.addressbook.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AddressBook {
     private List<Contact> contacts;
@@ -54,5 +56,11 @@ public class AddressBook {
         for (Contact contact : contacts) {
             System.out.println(contact);
         }
+    }
+
+    public void sortContactsByName() {
+        contacts.sort(Comparator
+                .comparing(Contact::getFirstName, String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(Contact::getLastName, String.CASE_INSENSITIVE_ORDER));
     }
 }

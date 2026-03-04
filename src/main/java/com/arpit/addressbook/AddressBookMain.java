@@ -84,7 +84,8 @@ public class AddressBookMain {
             System.out.println("2. Edit Contact");
             System.out.println("3. Delete Contact");
             System.out.println("4. Add Multiple Contacts");
-            System.out.println("5. Back");
+            System.out.println("5. Sort Contacts By Name");
+            System.out.println("6. Back");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -93,7 +94,8 @@ public class AddressBookMain {
                 case 2 -> editContact(addressBook);
                 case 3 -> deleteContact(addressBook);
                 case 4 -> addMultipleContacts(addressBook);
-                case 5 -> managing = false;
+                case 5 -> sortContacts(addressBook);
+                case 6 -> managing = false;
                 default -> System.out.println("Invalid choice. Try again.");
             }
         }
@@ -292,5 +294,10 @@ public class AddressBookMain {
 
         else
             System.out.print("Invalid Choice !");
+    }
+
+    private static void sortContacts(AddressBook addressBook) {
+        addressBook.sortContactsByName();
+        addressBook.getContacts().forEach(System.out::println);
     }
 }
