@@ -4,6 +4,11 @@ import com.arpit.addressbook.model.AddressBook;
 import com.arpit.addressbook.model.Contact;
 import com.arpit.addressbook.service.AddressBookService;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+
 import java.util.*;
 
 public class AddressBookMain {
@@ -27,7 +32,9 @@ public class AddressBookMain {
             System.out.println("5. Count Person by City or State");
             System.out.println("6. Save Address Books To File");
             System.out.println("7. Load Address Books From File");
-            System.out.println("8. Exit");
+            System.out.println("8. Save Address Books As CSV");
+            System.out.println("9. Load Address Books From CSV");
+            System.out.println("10. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -39,7 +46,9 @@ public class AddressBookMain {
                 case 5 -> countPersons(addressBookService);
                 case 6 -> saveToFile(addressBookService);
                 case 7 -> loadFromFile(addressBookService);
-                case 8 -> {
+                case 8 -> saveToCSV(addressBookService);
+                case 9 -> loadFromCSV(addressBookService);
+                case 10 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -384,6 +393,73 @@ public class AddressBookMain {
 
         } catch (Exception e) {
             System.out.println("Error loading file: " + e.getMessage());
+        }
+    }
+
+    private static void saveToCSV(AddressBookService service) {
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter("addressbook.csv"))) {
+
+            service.getAddressBooks().forEach((bookName, book) -> {
+
+                book.getContacts().forEach(contact -> {
+
+                    String[] data = {
+                            bookName,
+                            contact.getFirstName(),
+                            contact.getLastName(),
+                            contact.getAddress(),
+                            contact.getCity(),
+                            contact.getState(),
+                            contact.getZip(),
+                            contact.getPhone(),
+                            contact.getEmail()
+                    };
+
+                    writer.writeNext(data);
+                });
+            });
+
+            System.out.println("Address Books saved as CSV successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error writing CSV: " + e.getMessage());
+        }
+    }
+
+    private static void loadFromCSV(AddressBookService service) {
+
+        try (CSVReader reader = new CSVReader(new FileReader("addressbook.csv"))) {
+
+            String[] data;
+
+            while ((data = reader.readNext()) != null) {
+
+                String bookName = data[0];
+
+                service.createAddressBook(bookName);
+
+                Optional<AddressBook> opt =
+                        service.getAddressBook(bookName);
+
+                if (opt.isPresent()) {
+
+                    AddressBook book = opt.get();
+
+                    Contact contact = new Contact(
+                            data[1], data[2], data[3],
+                            data[4], data[5], data[6],
+                            data[7], data[8]
+                    );
+
+                    book.addContact(contact);
+                }
+            }
+
+            System.out.println("Address Books loaded from CSV successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error reading CSV: " + e.getMessage());
         }
     }
 }
