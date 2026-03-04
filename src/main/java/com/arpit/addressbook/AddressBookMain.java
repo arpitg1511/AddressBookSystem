@@ -5,6 +5,7 @@ import com.arpit.addressbook.model.Contact;
 import com.arpit.addressbook.service.AddressBookService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -25,7 +26,8 @@ public class AddressBookMain {
             System.out.println("1. Create AddressBook");
             System.out.println("2. Select AddressBook");
             System.out.println("3. Search Person by City or State");
-            System.out.println("4. Exit");
+            System.out.println("4. View Person by City or State");
+            System.out.println("5. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -33,7 +35,8 @@ public class AddressBookMain {
                 case 1 -> createAddressBook(addressBookService);
                 case 2 -> manageAddressBook(addressBookService);
                 case 3 -> searchPersons(addressBookService);
-                case 4 -> {
+                case 4 -> groupPersons(addressBookService);
+                case 5 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -235,5 +238,33 @@ public class AddressBookMain {
         } else {
             System.out.println("Invalid state or city name entered!");
         }
+    }
+
+    private static void groupPersons(AddressBookService addressBookService) {
+        System.out.println("View by : \n1. City\n2.State");
+
+        String choice = scanner.nextLine();
+
+        Map<String, List<Contact>> result =
+                switch (choice) {
+                    case "1" -> addressBookService.groupByCity();
+                    case "2" -> addressBookService.groupByState();
+                    default -> null;
+                };
+
+        if (result == null) {
+            System.out.println("Invalid choice!");
+            return;
+        }
+
+        if (result.isEmpty()) {
+            System.out.println("No contacts found!");
+            return;
+        }
+
+        result.forEach((key, contacts) -> {
+            System.out.println("\n" + key.toUpperCase());
+            contacts.forEach(System.out::println);
+        });
     }
 }

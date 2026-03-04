@@ -46,4 +46,20 @@ public class AddressBookService {
                 .filter(c -> c.getState().equals(state))
                 .collect(Collectors.toList());
     }
+
+    public Map<String, List<Contact>> groupByCity() {
+        return addressBooks.values().stream()
+                .flatMap(b -> b.getContacts().stream())
+                .collect(
+                        Collectors.groupingBy(c -> c.getCity())
+                );
+    }
+
+    public Map<String, List<Contact>> groupByState() {
+        return addressBooks.values().stream()
+                .flatMap(b -> b.getContacts().stream())
+                .collect(
+                        Collectors.groupingBy(c -> c.getState())
+                );
+    }
 }
