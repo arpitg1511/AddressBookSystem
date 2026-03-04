@@ -8,6 +8,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.*;
 
@@ -34,7 +36,9 @@ public class AddressBookMain {
             System.out.println("7. Load Address Books From File");
             System.out.println("8. Save Address Books As CSV");
             System.out.println("9. Load Address Books From CSV");
-            System.out.println("10. Exit");
+            System.out.println("10. Save Address Books As JSON");
+            System.out.println("11. Load Address Books From CSV");
+            System.out.println("12. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -48,7 +52,9 @@ public class AddressBookMain {
                 case 7 -> loadFromFile(addressBookService);
                 case 8 -> saveToCSV(addressBookService);
                 case 9 -> loadFromCSV(addressBookService);
-                case 10 -> {
+                case 10 -> saveToJSON(addressBookService);
+                case 11 -> loadFromJSON(addressBookService);
+                case 12 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -460,6 +466,44 @@ public class AddressBookMain {
 
         } catch (Exception e) {
             System.out.println("Error reading CSV: " + e.getMessage());
+        }
+    }
+
+    private static void saveToJSON(AddressBookService service) {
+
+        try (FileWriter writer = new FileWriter("addressbook.json")) {
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            gson.toJson(service.getAddressBooks(), writer);
+
+            System.out.println("Address Books saved as JSON successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error writing JSON: " + e.getMessage());
+        }
+    }
+
+    private static void loadFromJSON(AddressBookService service) {
+
+        try (FileReader reader = new FileReader("addressbook.json")) {
+
+            Gson gson = new Gson();
+
+            Map<String, AddressBook> data =
+                    gson.fromJson(reader,
+                            new com.google.gson.reflect.TypeToken<
+                                    Map<String, AddressBook>>(){}.getType());
+
+            if (data != null) {
+                service.getAddressBooks().clear();
+                service.getAddressBooks().putAll(data);
+            }
+
+            System.out.println("Address Books loaded from JSON successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error reading JSON: " + e.getMessage());
         }
     }
 }
