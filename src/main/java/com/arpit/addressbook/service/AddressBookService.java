@@ -51,7 +51,7 @@ public class AddressBookService {
         return addressBooks.values().stream()
                 .flatMap(b -> b.getContacts().stream())
                 .collect(
-                        Collectors.groupingBy(c -> c.getCity())
+                        Collectors.groupingBy(Contact::getCity)
                 );
     }
 
@@ -59,7 +59,31 @@ public class AddressBookService {
         return addressBooks.values().stream()
                 .flatMap(b -> b.getContacts().stream())
                 .collect(
-                        Collectors.groupingBy(c -> c.getState())
+                        Collectors.groupingBy(Contact::getState)
+                );
+    }
+
+    public Map<String, Integer> countByCity() {
+        return addressBooks.values().stream()
+                .flatMap(b -> b.getContacts().stream())
+                .collect(
+                        Collectors.groupingBy(Contact::getCity,
+                                Collectors.collectingAndThen(
+                                        Collectors.counting(),
+                                        Long::intValue
+                                ))
+                );
+    }
+
+    public Map<String, Integer> countByState() {
+        return addressBooks.values().stream()
+                .flatMap(b -> b.getContacts().stream())
+                .collect(
+                        Collectors.groupingBy(Contact::getState,
+                                Collectors.collectingAndThen(
+                                        Collectors.counting(),
+                                        Long::intValue
+                                ))
                 );
     }
 }

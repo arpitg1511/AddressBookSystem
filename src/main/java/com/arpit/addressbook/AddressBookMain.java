@@ -27,7 +27,8 @@ public class AddressBookMain {
             System.out.println("2. Select AddressBook");
             System.out.println("3. Search Person by City or State");
             System.out.println("4. View Person by City or State");
-            System.out.println("5. Exit");
+            System.out.println("5. Count Person by City or State");
+            System.out.println("6. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -36,7 +37,8 @@ public class AddressBookMain {
                 case 2 -> manageAddressBook(addressBookService);
                 case 3 -> searchPersons(addressBookService);
                 case 4 -> groupPersons(addressBookService);
-                case 5 -> {
+                case 5 -> countPersons(addressBookService);
+                case 6 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -230,7 +232,7 @@ public class AddressBookMain {
             };
 
         if(searchList!=null) {
-            if(searchList.size()>0) {
+            if(!searchList.isEmpty()) {
                 searchList.forEach(System.out::println);
             } else {
                 System.out.println("No contact found!");
@@ -266,5 +268,29 @@ public class AddressBookMain {
             System.out.println("\n" + key.toUpperCase());
             contacts.forEach(System.out::println);
         });
+    }
+
+    private static void countPersons(AddressBookService addressBookService) {
+        System.out.println("Count by : \n1. City\n2. State");
+        String choice = scanner.nextLine();
+
+        Map<String, Integer> result =
+                switch(choice) {
+
+            case "1" -> addressBookService.countByCity();
+            case "2" -> addressBookService.countByState();
+            default -> null;
+
+                };
+
+        if (result != null) {
+            result.forEach((key, count) -> {
+                System.out.println("\n" + key.toUpperCase());
+                System.out.println(count);
+            });
+        }
+
+        else
+            System.out.print("Invalid Choice !");
     }
 }
