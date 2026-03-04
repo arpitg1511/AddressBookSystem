@@ -4,10 +4,7 @@ import com.arpit.addressbook.model.AddressBook;
 import com.arpit.addressbook.model.Contact;
 import com.arpit.addressbook.service.AddressBookService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class AddressBookMain {
 
@@ -85,7 +82,8 @@ public class AddressBookMain {
             System.out.println("3. Delete Contact");
             System.out.println("4. Add Multiple Contacts");
             System.out.println("5. Sort Contacts By Name");
-            System.out.println("6. Back");
+            System.out.println("6. Sort Contacts By City or State or Zip");
+            System.out.println("7. Back");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -94,8 +92,9 @@ public class AddressBookMain {
                 case 2 -> editContact(addressBook);
                 case 3 -> deleteContact(addressBook);
                 case 4 -> addMultipleContacts(addressBook);
-                case 5 -> sortContacts(addressBook);
-                case 6 -> managing = false;
+                case 5 -> sortContactsByName(addressBook);
+                case 6 -> sortContacts(addressBook);
+                case 7 -> managing = false;
                 default -> System.out.println("Invalid choice. Try again.");
             }
         }
@@ -296,8 +295,22 @@ public class AddressBookMain {
             System.out.print("Invalid Choice !");
     }
 
-    private static void sortContacts(AddressBook addressBook) {
+    private static void sortContactsByName(AddressBook addressBook) {
         addressBook.sortContactsByName();
+        addressBook.getContacts().forEach(System.out::println);
+    }
+
+    private static void sortContacts(AddressBook addressBook) {
+        System.out.println("Sort by \n1. City\n2. State\n3. Zip");
+
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1" -> addressBook.getContacts().sort(addressBook.cityComparator());
+            case "2" -> addressBook.getContacts().sort(addressBook.stateComparator());
+            case "3" -> addressBook.getContacts().sort(addressBook.zipComparator());
+            default -> {System.out.println("Invalid choice !"); return;}
+        }
+
         addressBook.getContacts().forEach(System.out::println);
     }
 }

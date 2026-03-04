@@ -63,4 +63,16 @@ public class AddressBook {
                 .comparing(Contact::getFirstName, String.CASE_INSENSITIVE_ORDER)
                 .thenComparing(Contact::getLastName, String.CASE_INSENSITIVE_ORDER));
     }
+
+    public Comparator<Contact> zipComparator() {
+        return Comparator.comparing(Contact::getZip);
+    }
+
+    public Comparator<Contact> cityComparator() {
+        return Comparator.comparing(Contact::getCity);
+    }
+
+    public Comparator<Contact> stateComparator() {
+        return Comparator.comparing(Contact::getState);
+    }
 }
