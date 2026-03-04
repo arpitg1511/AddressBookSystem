@@ -25,7 +25,9 @@ public class AddressBookMain {
             System.out.println("3. Search Person by City or State");
             System.out.println("4. View Person by City or State");
             System.out.println("5. Count Person by City or State");
-            System.out.println("6. Exit");
+            System.out.println("6. Save Address Books To File");
+            System.out.println("7. Load Address Books From File");
+            System.out.println("8. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -35,7 +37,9 @@ public class AddressBookMain {
                 case 3 -> searchPersons(addressBookService);
                 case 4 -> groupPersons(addressBookService);
                 case 5 -> countPersons(addressBookService);
-                case 6 -> {
+                case 6 -> saveToFile(addressBookService);
+                case 7 -> loadFromFile(addressBookService);
+                case 8 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -312,5 +316,74 @@ public class AddressBookMain {
         }
 
         addressBook.getContacts().forEach(System.out::println);
+    }
+
+    private static void saveToFile(AddressBookService service) {
+
+        try (java.io.PrintWriter writer =
+                     new java.io.PrintWriter("addressbook.txt")) {
+
+            service.getAddressBooks().forEach((bookName, book) -> {
+
+                book.getContacts().forEach(contact -> {
+                    writer.println(
+                            bookName + "," +
+                                    contact.getFirstName() + "," +
+                                    contact.getLastName() + "," +
+                                    contact.getAddress() + "," +
+                                    contact.getCity() + "," +
+                                    contact.getState() + "," +
+                                    contact.getZip() + "," +
+                                    contact.getPhone() + "," +
+                                    contact.getEmail()
+                    );
+                });
+            });
+
+            System.out.println("Address Books saved successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error saving file: " + e.getMessage());
+        }
+    }
+
+    private static void loadFromFile(AddressBookService service) {
+
+        try (java.io.BufferedReader reader =
+                     new java.io.BufferedReader(
+                             new java.io.FileReader("addressbook.txt"))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                String bookName = data[0];
+
+                service.createAddressBook(bookName);
+
+                Optional<AddressBook> opt =
+                        service.getAddressBook(bookName);
+
+                if (opt.isPresent()) {
+
+                    AddressBook book = opt.get();
+
+                    Contact contact = new Contact(
+                            data[1], data[2], data[3],
+                            data[4], data[5], data[6],
+                            data[7], data[8]
+                    );
+
+                    book.addContact(contact);
+                }
+            }
+
+            System.out.println("Address Books loaded successfully!");
+
+        } catch (Exception e) {
+            System.out.println("Error loading file: " + e.getMessage());
+        }
     }
 }
