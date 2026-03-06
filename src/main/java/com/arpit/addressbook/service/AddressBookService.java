@@ -1,15 +1,22 @@
 package com.arpit.addressbook.service;
 import com.arpit.addressbook.model.AddressBook;
 import com.arpit.addressbook.model.Contact;
+import com.arpit.addressbook.repository.ContactRepository;
 
 import java.util.*;
 import java.util.stream.*;
 
 public class AddressBookService {
     private Map<String, AddressBook> addressBooks;
+    private ContactRepository contactRepository;
+
+    public List<Contact> getContactsFromDB() {
+        return contactRepository.getContacts();
+    }
 
     public AddressBookService() {
         addressBooks = new HashMap<>();
+        contactRepository = new ContactRepository();
     }
 
     public boolean createAddressBook(String id) {

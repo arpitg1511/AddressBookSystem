@@ -38,7 +38,8 @@ public class AddressBookMain {
             System.out.println("9. Load Address Books From CSV");
             System.out.println("10. Save Address Books As JSON");
             System.out.println("11. Load Address Books From CSV");
-            System.out.println("12. Exit");
+            System.out.println("12. View Contacts From Database");
+            System.out.println("13. Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -54,7 +55,8 @@ public class AddressBookMain {
                 case 9 -> loadFromCSV(addressBookService);
                 case 10 -> saveToJSON(addressBookService);
                 case 11 -> loadFromJSON(addressBookService);
-                case 12 -> {
+                case 12 -> viewContactsFromDB(addressBookService);
+                case 13 -> {
                     running = false;
                     System.out.println("Exiting Address Book System...");
                 }
@@ -505,5 +507,17 @@ public class AddressBookMain {
         } catch (Exception e) {
             System.out.println("Error reading JSON: " + e.getMessage());
         }
+    }
+
+    private static void viewContactsFromDB(AddressBookService service) {
+
+        List<Contact> contacts = service.getContactsFromDB();
+
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts found in database.");
+            return;
+        }
+
+        contacts.forEach(System.out::println);
     }
 }
